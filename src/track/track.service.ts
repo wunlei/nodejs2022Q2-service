@@ -1,15 +1,19 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InMemoryDatabase } from 'src/db/InMemoryDB';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { TrackEntity } from './entities/track.entity';
 import { v4 as uuidv4 } from 'uuid';
+import { FavoritesService } from 'src/favorites/favorites.service';
 
 @Injectable()
 export class TrackService {
   private static db: InMemoryDatabase<TrackEntity>;
 
-  constructor() {
+  constructor(
+    @Inject(forwardRef(() => FavoritesService))
+    private favoritesService: FavoritesService,
+  ) {
     TrackService.db = new InMemoryDatabase<TrackEntity>();
   }
 
@@ -31,15 +35,19 @@ export class TrackService {
 
   update(id: string, updateTrackDto: UpdateTrackDto) {
     const track = {
-      id,
       artistId: null,
       albumId: null,
       ...updateTrackDto,
+      id,
     };
+
+    console.log(track);
+
     return TrackService.db.update(id, track);
   }
 
   remove(id: string) {
+    this.favoritesService.removeFromFavorites(id);
     return TrackService.db.delete(id);
   }
 }

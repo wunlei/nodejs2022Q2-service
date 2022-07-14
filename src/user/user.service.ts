@@ -29,6 +29,10 @@ export class UserService {
   }
 
   findOne(id: string) {
+    const user = UserService.db.findOne(id);
+    if (!user) {
+      return user;
+    }
     return new UserEntity(UserService.db.findOne(id));
   }
 
