@@ -41,8 +41,6 @@ export class TrackService {
       id,
     };
 
-    console.log(track);
-
     return TrackService.db.update(id, track);
   }
 
