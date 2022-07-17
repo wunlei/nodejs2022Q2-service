@@ -35,6 +35,7 @@ export class UserController {
 
     if (!user) {
       throw new NotFoundException({
+        statusCode: 404,
         error: 'Not Found',
         message: `User with id ${id} was not found`,
       });
@@ -52,6 +53,7 @@ export class UserController {
 
     if (updateUserDto.oldPassword !== user.password) {
       throw new ForbiddenException({
+        statusCode: 403,
         message: 'Old password is incorrect',
         error: 'Bad Request',
       });

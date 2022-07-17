@@ -34,6 +34,7 @@ export class TrackController {
 
     if (!track) {
       throw new NotFoundException({
+        statusCode: 404,
         error: 'Not Found',
         message: `Track with id ${id} was not found`,
       });

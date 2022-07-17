@@ -44,7 +44,11 @@ export class FavoritesService {
     const track = this.trackService.findOne(id);
 
     if (!track) {
-      throw new UnprocessableEntityException();
+      throw new UnprocessableEntityException({
+        statusCode: 422,
+        error: 'Unprocessable Entity',
+        message: `Entity with id ${id} doesn't exist`,
+      });
     }
 
     return FavoritesService.db.add('tracks', id);
@@ -53,7 +57,11 @@ export class FavoritesService {
   removeTrackFromFavorites(id: string) {
     const track = FavoritesService.db.findOneItem('tracks', id);
     if (!track) {
-      throw new NotFoundException();
+      throw new NotFoundException({
+        statusCode: 404,
+        error: 'Not Found',
+        message: `Entity with id ${id} was not found`,
+      });
     }
 
     return FavoritesService.db.remove('tracks', id);
@@ -63,7 +71,11 @@ export class FavoritesService {
     const album = this.albumService.findOne(id);
 
     if (!album) {
-      throw new UnprocessableEntityException();
+      throw new UnprocessableEntityException({
+        statusCode: 422,
+        error: 'Unprocessable Entity',
+        message: `Entity with id ${id} doesn't exist`,
+      });
     }
 
     return FavoritesService.db.add('albums', id);
@@ -72,7 +84,11 @@ export class FavoritesService {
   removeAlbumFromFavorites(id: string) {
     const album = FavoritesService.db.findOneItem('albums', id);
     if (!album) {
-      throw new NotFoundException();
+      throw new NotFoundException({
+        statusCode: 404,
+        error: 'Not Found',
+        message: `Entity with id ${id} was not found`,
+      });
     }
 
     return FavoritesService.db.remove('albums', id);
@@ -82,7 +98,11 @@ export class FavoritesService {
     const artist = this.artistService.findOne(id);
 
     if (!artist) {
-      throw new UnprocessableEntityException();
+      throw new UnprocessableEntityException({
+        statusCode: 422,
+        error: 'Unprocessable Entity',
+        message: `Entity with id ${id} doesn't exist`,
+      });
     }
 
     return FavoritesService.db.add('artists', id);
@@ -91,7 +111,11 @@ export class FavoritesService {
   removeArtistFromFavorites(id: string) {
     const artist = FavoritesService.db.findOneItem('artists', id);
     if (!artist) {
-      throw new NotFoundException();
+      throw new NotFoundException({
+        statusCode: 404,
+        error: 'Not Found',
+        message: `Entity with id ${id} was not found`,
+      });
     }
     return FavoritesService.db.remove('artists', id);
   }

@@ -34,6 +34,7 @@ export class ArtistController {
 
     if (!artist) {
       throw new NotFoundException({
+        statusCode: 404,
         error: 'Not Found',
         message: `Artist with id ${id} was not found`,
       });
