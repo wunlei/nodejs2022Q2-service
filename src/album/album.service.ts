@@ -23,6 +23,7 @@ export class AlbumService {
   create(createAlbumDto: CreateAlbumDto) {
     const data = {
       id: uuidv4(),
+      artistId: null,
       ...createAlbumDto,
     };
 
@@ -39,6 +40,7 @@ export class AlbumService {
 
   update(id: string, updateAlbumDto: UpdateAlbumDto) {
     const album = {
+      artistId: null,
       ...updateAlbumDto,
       id,
     };

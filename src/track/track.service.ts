@@ -20,6 +20,8 @@ export class TrackService {
   create(createTrackDto: CreateTrackDto) {
     const data = {
       id: uuidv4(),
+      artistId: null,
+      albumId: null,
       ...createTrackDto,
     };
     return TrackService.db.create(data);
