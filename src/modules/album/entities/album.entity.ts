@@ -1,4 +1,4 @@
-export default class AlbumEntity {
+export class AlbumEntity {
   id: string;
   name: string;
   year: number;

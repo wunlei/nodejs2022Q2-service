@@ -24,5 +24,6 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, parse(DOC_API));
 
   await app.listen(process.env.PORT || DEFAULT_PORT);
+  console.log(`App started at: http://localhost:${process.env.PORT}`);
 }
 bootstrap();

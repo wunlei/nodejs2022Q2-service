@@ -1,11 +1,10 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import { CreateAlbumDto } from './dto/create-album.dto';
-import { UpdateAlbumDto } from './dto/update-album.dto';
-import { InMemoryDatabase } from 'src/db/InMemoryDB';
 import { v4 as uuidv4 } from 'uuid';
-import AlbumEntity from './entities/album.entity';
-import { FavoritesService } from 'src/favorites/favorites.service';
-import { TrackService } from 'src/track/track.service';
+import { AlbumEntity } from './entities/album.entity';
+import { AlbumDto } from './dto/album.dto';
+import { FavoritesService } from '../favorites/favorites.service';
+import { TrackService } from '../track/track.service';
+import { InMemoryDatabase } from '../../inmemory-db/InMemoryDB';
 
 @Injectable()
 export class AlbumService {
@@ -20,7 +19,7 @@ export class AlbumService {
     AlbumService.db = new InMemoryDatabase<AlbumEntity>();
   }
 
-  create(createAlbumDto: CreateAlbumDto) {
+  create(createAlbumDto: AlbumDto) {
     const data = {
       id: uuidv4(),
       artistId: null,
@@ -38,7 +37,7 @@ export class AlbumService {
     return AlbumService.db.findOne(id);
   }
 
-  update(id: string, updateAlbumDto: UpdateAlbumDto) {
+  update(id: string, updateAlbumDto: AlbumDto) {
     const album = {
       artistId: null,
       ...updateAlbumDto,

@@ -10,16 +10,16 @@ import {
   HttpCode,
   NotFoundException,
 } from '@nestjs/common';
+import { TrackDto } from './dto/track.dto';
 import { TrackService } from './track.service';
-import { CreateTrackDto } from './dto/create-track.dto';
-import { UpdateTrackDto } from './dto/update-track.dto';
+import EXCEPTIONS from '../../constants/exceptions';
 
 @Controller('track')
 export class TrackController {
   constructor(private readonly tracksService: TrackService) {}
 
   @Post()
-  create(@Body() createTrackDto: CreateTrackDto) {
+  create(@Body() createTrackDto: TrackDto) {
     return this.tracksService.create(createTrackDto);
   }
 
@@ -33,11 +33,7 @@ export class TrackController {
     const track = this.tracksService.findOne(id);
 
     if (!track) {
-      throw new NotFoundException({
-        statusCode: 404,
-        error: 'Not Found',
-        message: `Track with id ${id} was not found`,
-      });
+      throw new NotFoundException(EXCEPTIONS.NOT_FOUND);
     }
 
     return track;
@@ -46,7 +42,7 @@ export class TrackController {
   @Put(':id')
   update(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
-    @Body() updateTrackDto: UpdateTrackDto,
+    @Body() updateTrackDto: TrackDto,
   ) {
     this.findOne(id);
     return this.tracksService.update(id, updateTrackDto);

@@ -5,10 +5,11 @@ import {
   NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { AlbumService } from 'src/album/album.service';
-import { ArtistService } from 'src/artist/artist.service';
-import { FavoritesDatabase } from 'src/db/FavoritesDB';
-import { TrackService } from 'src/track/track.service';
+import { AlbumService } from '../album/album.service';
+import { ArtistService } from '../artist/artist.service';
+import { FavoritesDatabase } from '../../inmemory-db/FavoritesDB';
+import { TrackService } from '../track/track.service';
+import EXCEPTIONS from '../../constants/exceptions';
 
 @Injectable()
 export class FavoritesService {
@@ -44,11 +45,7 @@ export class FavoritesService {
     const track = this.trackService.findOne(id);
 
     if (!track) {
-      throw new UnprocessableEntityException({
-        statusCode: 422,
-        error: 'Unprocessable Entity',
-        message: `Entity with id ${id} doesn't exist`,
-      });
+      throw new UnprocessableEntityException(EXCEPTIONS.UNPROCESSABLE_ENTITY);
     }
 
     return FavoritesService.db.add('tracks', id);
@@ -57,11 +54,7 @@ export class FavoritesService {
   removeTrackFromFavorites(id: string) {
     const track = FavoritesService.db.findOneItem('tracks', id);
     if (!track) {
-      throw new NotFoundException({
-        statusCode: 404,
-        error: 'Not Found',
-        message: `Entity with id ${id} was not found`,
-      });
+      throw new NotFoundException(EXCEPTIONS.NOT_FOUND);
     }
 
     return FavoritesService.db.remove('tracks', id);
@@ -71,11 +64,7 @@ export class FavoritesService {
     const album = this.albumService.findOne(id);
 
     if (!album) {
-      throw new UnprocessableEntityException({
-        statusCode: 422,
-        error: 'Unprocessable Entity',
-        message: `Entity with id ${id} doesn't exist`,
-      });
+      throw new UnprocessableEntityException(EXCEPTIONS.UNPROCESSABLE_ENTITY);
     }
 
     return FavoritesService.db.add('albums', id);
@@ -84,11 +73,7 @@ export class FavoritesService {
   removeAlbumFromFavorites(id: string) {
     const album = FavoritesService.db.findOneItem('albums', id);
     if (!album) {
-      throw new NotFoundException({
-        statusCode: 404,
-        error: 'Not Found',
-        message: `Entity with id ${id} was not found`,
-      });
+      throw new NotFoundException(EXCEPTIONS.NOT_FOUND);
     }
 
     return FavoritesService.db.remove('albums', id);
@@ -98,11 +83,7 @@ export class FavoritesService {
     const artist = this.artistService.findOne(id);
 
     if (!artist) {
-      throw new UnprocessableEntityException({
-        statusCode: 422,
-        error: 'Unprocessable Entity',
-        message: `Entity with id ${id} doesn't exist`,
-      });
+      throw new UnprocessableEntityException(EXCEPTIONS.UNPROCESSABLE_ENTITY);
     }
 
     return FavoritesService.db.add('artists', id);
@@ -111,11 +92,7 @@ export class FavoritesService {
   removeArtistFromFavorites(id: string) {
     const artist = FavoritesService.db.findOneItem('artists', id);
     if (!artist) {
-      throw new NotFoundException({
-        statusCode: 404,
-        error: 'Not Found',
-        message: `Entity with id ${id} was not found`,
-      });
+      throw new NotFoundException(EXCEPTIONS.NOT_FOUND);
     }
     return FavoritesService.db.remove('artists', id);
   }

@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { ArtistService } from './artist.service';
 import { ArtistController } from './artist.controller';
-import { FavoritesService } from 'src/favorites/favorites.service';
-import { AlbumService } from 'src/album/album.service';
-import { TrackService } from 'src/track/track.service';
+import { ArtistService } from './artist.service';
+import { AlbumService } from '../album/album.service';
+import { TrackService } from '../track/track.service';
+import { FavoritesService } from '../favorites/favorites.service';
 
 @Module({
   controllers: [ArtistController],

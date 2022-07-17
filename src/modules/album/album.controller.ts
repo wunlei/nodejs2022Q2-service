@@ -11,15 +11,15 @@ import {
   HttpCode,
 } from '@nestjs/common';
 import { AlbumService } from './album.service';
-import { CreateAlbumDto } from './dto/create-album.dto';
-import { UpdateAlbumDto } from './dto/update-album.dto';
+import { AlbumDto } from './dto/album.dto';
+import EXCEPTIONS from '../../constants/exceptions';
 
 @Controller('album')
 export class AlbumController {
   constructor(private readonly albumsService: AlbumService) {}
 
   @Post()
-  create(@Body() createAlbumDto: CreateAlbumDto) {
+  create(@Body() createAlbumDto: AlbumDto) {
     return this.albumsService.create(createAlbumDto);
   }
 
@@ -33,11 +33,7 @@ export class AlbumController {
     const album = this.albumsService.findOne(id);
 
     if (!album) {
-      throw new NotFoundException({
-        statusCode: 404,
-        error: 'Not Found',
-        message: `Album with id ${id} was not found`,
-      });
+      throw new NotFoundException(EXCEPTIONS.NOT_FOUND);
     }
 
     return album;
@@ -46,7 +42,7 @@ export class AlbumController {
   @Put(':id')
   update(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
-    @Body() updateAlbumDto: UpdateAlbumDto,
+    @Body() updateAlbumDto: AlbumDto,
   ) {
     this.findOne(id);
     return this.albumsService.update(id, updateAlbumDto);

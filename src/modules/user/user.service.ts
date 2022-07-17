@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { InMemoryDatabase } from 'src/db/InMemoryDB';
+import { v4 as uuidv4 } from 'uuid';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import UserEntity from './entities/user.entity';
-import { v4 as uuidv4 } from 'uuid';
+import { InMemoryDatabase } from '../../inmemory-db/InMemoryDB';
 
 @Injectable()
 export class UserService {

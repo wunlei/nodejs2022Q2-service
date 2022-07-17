@@ -1,10 +1,9 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import { InMemoryDatabase } from 'src/db/InMemoryDB';
-import { CreateTrackDto } from './dto/create-track.dto';
-import { UpdateTrackDto } from './dto/update-track.dto';
-import { TrackEntity } from './entities/track.entity';
 import { v4 as uuidv4 } from 'uuid';
-import { FavoritesService } from 'src/favorites/favorites.service';
+import { TrackDto } from './dto/track.dto';
+import { TrackEntity } from './entities/track.entity';
+import { FavoritesService } from '../favorites/favorites.service';
+import { InMemoryDatabase } from '../../inmemory-db/InMemoryDB';
 
 @Injectable()
 export class TrackService {
@@ -17,7 +16,7 @@ export class TrackService {
     TrackService.db = new InMemoryDatabase<TrackEntity>();
   }
 
-  create(createTrackDto: CreateTrackDto) {
+  create(createTrackDto: TrackDto) {
     const data = {
       id: uuidv4(),
       artistId: null,
@@ -35,7 +34,7 @@ export class TrackService {
     return TrackService.db.findOne(id);
   }
 
-  update(id: string, updateTrackDto: UpdateTrackDto) {
+  update(id: string, updateTrackDto: TrackDto) {
     const track = {
       artistId: null,
       albumId: null,

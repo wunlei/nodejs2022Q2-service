@@ -6,7 +6,7 @@ import {
   IsUUID,
 } from 'class-validator';
 
-export class CreateAlbumDto {
+export class AlbumDto {
   @IsNotEmpty()
   @IsString()
   name: string;

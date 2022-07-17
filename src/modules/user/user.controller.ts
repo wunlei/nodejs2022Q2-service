@@ -14,6 +14,7 @@ import {
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
+import EXCEPTIONS from '../../constants/exceptions';
 
 @Controller('user')
 export class UserController {
@@ -34,11 +35,7 @@ export class UserController {
     const user = this.usersService.findOne(id);
 
     if (!user) {
-      throw new NotFoundException({
-        statusCode: 404,
-        error: 'Not Found',
-        message: `User with id ${id} was not found`,
-      });
+      throw new NotFoundException(EXCEPTIONS.NOT_FOUND);
     }
 
     return user;
@@ -52,11 +49,7 @@ export class UserController {
     const user = this.findOne(id);
 
     if (updateUserDto.oldPassword !== user.password) {
-      throw new ForbiddenException({
-        statusCode: 403,
-        message: 'Old password is incorrect',
-        error: 'Bad Request',
-      });
+      throw new ForbiddenException(EXCEPTIONS.FORBIDDEN_PASSWORD);
     }
 
     return this.usersService.update(id, updateUserDto, user);

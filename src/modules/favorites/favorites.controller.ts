@@ -22,7 +22,6 @@ export class FavoritesController {
   addTrackToFavorites(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ) {
-    //Server should answer with status code 422 and corresponding message if track with id === trackId doesn't exist
     return this.favoritesService.addTrackToFavorites(id);
   }
 
@@ -38,7 +37,6 @@ export class FavoritesController {
   addAlbumToFavorites(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ) {
-    //Server should answer with status code 422 and corresponding message if track with id === trackId doesn't exist
     return this.favoritesService.addAlbumToFavorites(id);
   }
 
@@ -47,7 +45,6 @@ export class FavoritesController {
   removeAlbumFromFavorites(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ) {
-    //Server should answer with status code 404 and corresponding message if corresponding artist is not favorite
     return this.favoritesService.removeAlbumFromFavorites(id);
   }
 
@@ -55,7 +52,6 @@ export class FavoritesController {
   addArtistToFavorites(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ) {
-    //Server should answer with status code 422 and corresponding message if track with id === trackId doesn't exist
     return this.favoritesService.addArtistToFavorites(id);
   }
 

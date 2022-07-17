@@ -11,15 +11,15 @@ import {
   HttpCode,
 } from '@nestjs/common';
 import { ArtistService } from './artist.service';
-import { CreateArtistDto } from './dto/create-artist.dto';
-import { UpdateArtistDto } from './dto/update-artist.dto';
+import { ArtistDto } from './dto/artist.dto';
+import EXCEPTIONS from '../../constants/exceptions';
 
 @Controller('artist')
 export class ArtistController {
   constructor(private readonly artistsService: ArtistService) {}
 
   @Post()
-  create(@Body() createArtistDto: CreateArtistDto) {
+  create(@Body() createArtistDto: ArtistDto) {
     return this.artistsService.create(createArtistDto);
   }
 
@@ -33,11 +33,7 @@ export class ArtistController {
     const artist = this.artistsService.findOne(id);
 
     if (!artist) {
-      throw new NotFoundException({
-        statusCode: 404,
-        error: 'Not Found',
-        message: `Artist with id ${id} was not found`,
-      });
+      throw new NotFoundException(EXCEPTIONS.NOT_FOUND);
     }
 
     return artist;
@@ -46,7 +42,7 @@ export class ArtistController {
   @Put(':id')
   update(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
-    @Body() updateArtistDto: UpdateArtistDto,
+    @Body() updateArtistDto: ArtistDto,
   ) {
     this.findOne(id);
     return this.artistsService.update(id, updateArtistDto);
