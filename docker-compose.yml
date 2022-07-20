@@ -1,0 +1,42 @@
+version: '3.8'
+services:
+  server:
+    container_name: nodejs2022q2-server
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    networks:
+      - app-server
+    ports:
+      - ${PORT}:${PORT}
+    restart: always
+    volumes:
+      - .:/app
+    depends_on:
+      - db-postgres
+  db-postgres:
+    container_name: postgres-db
+    build:
+      context: .
+      dockerfile: src/database/Dockerfile-db
+    env_file:
+      - .env
+    networks:
+      - app-server
+    ports:
+      - ${DATABASE_PORT}:${DATABASE_PORT}
+    restart: always
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_DB: ${DATABASE_NAME}
+networks:
+  app-server:
+    driver: bridge
+    name: app-server
+volumes:
+  postgres-data:
