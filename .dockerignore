@@ -1,5 +1,8 @@
 Dockerfile*
 .dockerignore
 .env
+.git
 dist
+doc
+test
 node_modules
