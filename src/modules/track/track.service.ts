@@ -1,52 +1,56 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import { v4 as uuidv4 } from 'uuid';
+import { Injectable } from '@nestjs/common';
 import { TrackDto } from './dto/track.dto';
+import { PrismaService } from '../../database/prisma.service';
 import { TrackEntity } from './entities/track.entity';
-import { FavoritesService } from '../favorites/favorites.service';
-import { InMemoryDatabase } from '../../inmemory-db/InMemoryDB';
+import { RESPONSES, Response } from '../../constants/responses';
 
 @Injectable()
 export class TrackService {
-  private static db: InMemoryDatabase<TrackEntity>;
+  constructor(private prisma: PrismaService) {}
 
-  constructor(
-    @Inject(forwardRef(() => FavoritesService))
-    private favoritesService: FavoritesService,
-  ) {
-    TrackService.db = new InMemoryDatabase<TrackEntity>();
+  async create(createTrackDto: TrackDto) {
+    const track = await this.prisma.track.create({ data: createTrackDto });
+    return new TrackEntity(track);
   }
 
-  create(createTrackDto: TrackDto) {
-    const data = {
-      id: uuidv4(),
-      artistId: null,
-      albumId: null,
-      ...createTrackDto,
-    };
-    return TrackService.db.create(data);
+  async findAll() {
+    const tracks = await this.prisma.track.findMany();
+    return tracks.map((track) => new TrackEntity(track));
   }
 
-  findAll() {
-    return TrackService.db.findAll();
+  async findOne(id: string) {
+    const track = await this.prisma.track.findUnique({
+      where: {
+        id: id,
+      },
+    });
+
+    if (!track) {
+      return null;
+    }
+    return new TrackEntity(track);
   }
 
-  findOne(id: string) {
-    return TrackService.db.findOne(id);
+  async update(id: string, updateTrackDto: TrackDto) {
+    const track = await this.prisma.track.update({
+      where: {
+        id: id,
+      },
+      data: {
+        artistId: null,
+        albumId: null,
+        ...updateTrackDto,
+      },
+    });
+    return new TrackEntity(track);
   }
 
-  update(id: string, updateTrackDto: TrackDto) {
-    const track = {
-      artistId: null,
-      albumId: null,
-      ...updateTrackDto,
-      id,
-    };
-
-    return TrackService.db.update(id, track);
-  }
-
-  remove(id: string) {
-    this.favoritesService.removeFromFavorites(id);
-    return TrackService.db.delete(id);
+  async remove(id: string): Promise<Response> {
+    await this.prisma.track.delete({
+      where: {
+        id: id,
+      },
+    });
+    return RESPONSES.REMOVED;
   }
 }
