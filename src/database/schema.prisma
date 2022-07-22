@@ -7,3 +7,52 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id        String   @id @default(uuid())
+  login     String
+  password  String
+  version   Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Album {
+  id          String     @id @default(uuid())
+  name        String
+  year        Int
+  artistId    String?
+  artist      Artist?    @relation(fields: [artistId], references: [id], onDelete: SetNull)
+  favorites   Favorites? @relation(fields: [favoritesId], references: [id], onDelete: SetNull)
+  favoritesId String?
+  track       Track[]
+}
+
+model Artist {
+  id          String     @id @default(uuid())
+  name        String
+  grammy      Boolean
+  favorites   Favorites? @relation(fields: [favoritesId], references: [id], onDelete: SetNull)
+  favoritesId String?
+  album       Album[]
+  track       Track[]
+}
+
+model Track {
+  id          String     @id @default(uuid())
+  name        String
+  artist      Artist?    @relation(fields: [artistId], references: [id], onDelete: SetNull)
+  artistId    String?
+  album       Album?     @relation(fields: [albumId], references: [id], onDelete: SetNull)
+  albumId     String?
+  duration    Int
+  favorites   Favorites? @relation(fields: [favoritesId], references: [id], onDelete: SetNull)
+  favoritesId String?
+}
+
+model Favorites {
+  id      String   @id @default("0")
+  artists Artist[]
+  albums  Album[]
+  tracks  Track[]
+}
