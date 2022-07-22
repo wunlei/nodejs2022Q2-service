@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { AlbumService } from './album.service';
 import { AlbumDto } from './dto/album.dto';
-import EXCEPTIONS from '../../constants/exceptions';
+import { RESPONSES } from '../../constants/responses';
 
 @Controller('album')
 export class AlbumController {
@@ -29,29 +29,29 @@ export class AlbumController {
   }
 
   @Get(':id')
-  findOne(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    const album = this.albumsService.findOne(id);
+  async findOne(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
+    const album = await this.albumsService.findOne(id);
 
     if (!album) {
-      throw new NotFoundException(EXCEPTIONS.NOT_FOUND);
+      throw new NotFoundException(RESPONSES.NOT_FOUND);
     }
 
     return album;
   }
 
   @Put(':id')
-  update(
+  async update(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() updateAlbumDto: AlbumDto,
   ) {
-    this.findOne(id);
+    await this.findOne(id);
     return this.albumsService.update(id, updateAlbumDto);
   }
 
   @Delete(':id')
   @HttpCode(204)
-  remove(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    this.findOne(id);
+  async remove(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
+    await this.findOne(id);
     return this.albumsService.remove(id);
   }
 }
