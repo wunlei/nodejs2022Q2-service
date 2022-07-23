@@ -1,53 +1,62 @@
 import { Injectable } from '@nestjs/common';
-import { v4 as uuidv4 } from 'uuid';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
-import UserEntity from './entities/user.entity';
-import { InMemoryDatabase } from '../../inmemory-db/InMemoryDB';
+import { UserEntity } from './entities/user.entity';
+import { PrismaService } from '../../database/prisma.service';
+import { Response, RESPONSES } from '../../constants/responses';
 
 @Injectable()
 export class UserService {
-  private static db: InMemoryDatabase<UserEntity>;
-  constructor() {
-    UserService.db = new InMemoryDatabase<UserEntity>();
+  constructor(private prisma: PrismaService) {}
+
+  async create(createUserDto: CreateUserDto) {
+    const user = await this.prisma.user.create({
+      data: {
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        ...createUserDto,
+      },
+    });
+    return new UserEntity(user);
   }
 
-  create(createUserDto: CreateUserDto) {
-    const data = {
-      id: uuidv4(),
-      ...createUserDto,
-      version: 1,
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
-    };
-    return new UserEntity(UserService.db.create(data));
-  }
-
-  findAll() {
-    const users = UserService.db.findAll();
+  async findAll() {
+    const users = await this.prisma.user.findMany();
     return users.map((user) => new UserEntity(user));
   }
 
-  findOne(id: string) {
-    const user = UserService.db.findOne(id);
+  async findOne(id: string) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: id,
+      },
+    });
+
     if (!user) {
-      return user;
+      return null;
     }
-    return new UserEntity(UserService.db.findOne(id));
+    return new UserEntity(user);
   }
 
-  update(id: string, updateUserDto: UpdatePasswordDto, user: UserEntity) {
-    const updateData = {
-      ...user,
-      password: updateUserDto.newPassword,
-      version: user.version + 1,
-      updatedAt: Date.now(),
-    };
+  async update(id: string, updateUserDto: UpdatePasswordDto) {
+    const user = await this.prisma.user.update({
+      where: { id: id },
+      data: {
+        password: updateUserDto.newPassword,
+        version: { increment: 1 },
+      },
+    });
 
-    return new UserEntity(UserService.db.update(id, updateData));
+    return new UserEntity(user);
   }
 
-  remove(id: string) {
-    return UserService.db.delete(id);
+  async remove(id: string): Promise<Response> {
+    await this.prisma.user.delete({
+      where: {
+        id: id,
+      },
+    });
+
+    return RESPONSES.REMOVED;
   }
 }
