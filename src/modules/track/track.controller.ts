@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { TrackDto } from './dto/track.dto';
 import { TrackService } from './track.service';
-import RESPONSES from '../../constants/responses';
+import { RESPONSES } from '../../constants/responses';
 
 @Controller('track')
 export class TrackController {
