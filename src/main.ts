@@ -18,7 +18,7 @@ async function bootstrap() {
 
   const DOC_API = await readFile(resolve(cwd(), 'doc', 'api.yaml'), 'utf-8');
 
-  SwaggerModule.setup('api', app, parse(DOC_API));
+  SwaggerModule.setup('doc', app, parse(DOC_API));
 
   await app.listen(process.env.PORT || DEFAULT_PORT);
 }

@@ -22,6 +22,16 @@ export const RESPONSES = {
     message: 'Old password is incorrect',
     error: 'Bad Request',
   },
+  FORBIDDEN_USER: {
+    statusCode: HttpStatus.FORBIDDEN,
+    message: 'No user with such login or password',
+    error: 'Bad Request',
+  },
+  FORBIDDEN_TOKEN: {
+    statusCode: HttpStatus.FORBIDDEN,
+    message: 'Token invalid or expired',
+    error: 'Bad Request',
+  },
   REMOVED: { statusCode: HttpStatus.NO_CONTENT, message: 'Removed' },
   CREATED: { statusCode: HttpStatus.CREATED, message: 'Created' },
 };
