@@ -24,7 +24,7 @@ export const RESPONSES = {
   },
   FORBIDDEN_USER: {
     statusCode: HttpStatus.FORBIDDEN,
-    message: 'No user with such login or password',
+    message: 'Incorrect login or password',
     error: 'Bad Request',
   },
   FORBIDDEN_TOKEN: {
