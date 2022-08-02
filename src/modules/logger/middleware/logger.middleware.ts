@@ -5,13 +5,12 @@ import { Request, Response, NextFunction } from 'express';
 export class LoggerMiddleware implements NestMiddleware {
   // constructor(private myLogger: MyLogger) {}
   use(req: Request, res: Response, next: NextFunction) {
-    const requestString = `${req.method} ${
-      req.originalUrl
-    } - ${this.bodyToString(req.body)}`;
-
-    Logger.log(requestString, 'Request');
-
     res.on('close', () => {
+      const requestString = `${req.method} ${
+        req.originalUrl
+      } - ${this.bodyToString(req.body)}`;
+
+      Logger.log(requestString, 'Request');
       const responseString = `${req.method} ${req.originalUrl} - ${res.statusCode} (${res.statusMessage})`;
       Logger.log(responseString, 'Response');
     });
