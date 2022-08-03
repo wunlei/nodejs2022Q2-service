@@ -4,17 +4,26 @@ import { UpdatePasswordDto } from './dto/update-password.dto';
 import { UserEntity } from './entities/user.entity';
 import { PrismaService } from '../../database/prisma.service';
 import { Response, RESPONSES } from '../../constants/responses';
+import { hash } from 'bcrypt';
 
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
   async create(createUserDto: CreateUserDto) {
+    const hashedPassword = await hash(
+      createUserDto.password,
+      Number(process.env.CRYPT_SALT),
+    ).then(function (hash) {
+      return hash;
+    });
+
     const user = await this.prisma.user.create({
       data: {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         ...createUserDto,
+        password: hashedPassword,
       },
     });
     return new UserEntity(user);
