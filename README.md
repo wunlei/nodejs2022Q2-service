@@ -4,27 +4,53 @@
 
 - Git - [Download & Install Git](https://git-scm.com/downloads).
 - Node.js - [Download & Install Node.js](https://nodejs.org/en/download/) and the npm package manager.
+- Docker - [Download & Install Docker](https://www.docker.com/get-started/)
 
-## Downloading
+## Usage
+
+### Downloading
+
+1. Clone repository
 
 ```
 git clone https://github.com/wunlei/nodejs2022Q2-service.git
 ```
 
-## Installing NPM modules
+2. Go to project folder and checkout to dev branch:
+
+```
+  cd nodejs2022Q2-service
+  git checkout docker
+```
+
+### Installing NPM modules
 
 ```
 npm install
 ```
 
-## Running application
+### Running application
+
+1. Copy and rename `.env.example` to `.env`. If needed apply changes in `.env` file
+
+2. Run app:
 
 ```
-npm start
+docker-compose up
 ```
 
 After starting the app on port (4000 as default) you can open
 in your browser OpenAPI documentation by typing http://localhost:4000/api/
+
+## Docker Scan
+
+```
+npm run docker:scan:server
+```
+
+```
+npm run docker:scan:db
+```
 
 ## Testing
 
@@ -63,9 +89,3 @@ npm run lint
 ```
 npm run format
 ```
-
-### Debugging in VSCode
-
-Press <kbd>F5</kbd> to debug.
-
-For more information, visit: https://code.visualstudio.com/docs/editor/debugging
