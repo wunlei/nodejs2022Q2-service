@@ -14,7 +14,7 @@ import {
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
-import EXCEPTIONS from '../../constants/exceptions';
+import { RESPONSES } from '../../constants/responses';
 
 @Controller('user')
 export class UserController {
@@ -31,34 +31,34 @@ export class UserController {
   }
 
   @Get(':id')
-  findOne(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    const user = this.usersService.findOne(id);
+  async findOne(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
+    const user = await this.usersService.findOne(id);
 
     if (!user) {
-      throw new NotFoundException(EXCEPTIONS.NOT_FOUND);
+      throw new NotFoundException(RESPONSES.NOT_FOUND);
     }
 
     return user;
   }
 
   @Put(':id')
-  update(
+  async update(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() updateUserDto: UpdatePasswordDto,
   ) {
-    const user = this.findOne(id);
+    const user = await this.findOne(id);
 
     if (updateUserDto.oldPassword !== user.password) {
-      throw new ForbiddenException(EXCEPTIONS.FORBIDDEN_PASSWORD);
+      throw new ForbiddenException(RESPONSES.FORBIDDEN_PASSWORD);
     }
 
-    return this.usersService.update(id, updateUserDto, user);
+    return this.usersService.update(id, updateUserDto);
   }
 
   @Delete(':id')
   @HttpCode(204)
-  remove(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    this.findOne(id);
+  async remove(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
+    await this.findOne(id);
 
     return this.usersService.remove(id);
   }

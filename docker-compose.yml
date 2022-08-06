@@ -30,6 +30,7 @@ services:
     restart: always
     volumes:
       - postgres-data:/var/lib/postgresql/data
+      - postgres-logs:/var/log/postgresql/postgresql.log
     environment:
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
       POSTGRES_USER: ${DATABASE_USER}
@@ -40,3 +41,4 @@ networks:
     name: app-server
 volumes:
   postgres-data:
+  postgres-logs:

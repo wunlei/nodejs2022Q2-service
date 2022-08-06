@@ -1,71 +1,55 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import { v4 as uuidv4 } from 'uuid';
+import { Injectable } from '@nestjs/common';
 import { ArtistDto } from './dto/artist.dto';
-import { InMemoryDatabase } from '../../inmemory-db/InMemoryDB';
-import ArtistEntity from './entities/artist.entity';
-import { FavoritesService } from '../favorites/favorites.service';
-import { AlbumService } from '../album/album.service';
-import { TrackService } from '../track/track.service';
+import { PrismaService } from '../../database/prisma.service';
+import { ArtistEntity } from './entities/artist.entity';
+import { Response, RESPONSES } from '../../constants/responses';
 
 @Injectable()
 export class ArtistService {
-  private static db: InMemoryDatabase<ArtistEntity>;
+  constructor(private prisma: PrismaService) {}
 
-  constructor(
-    @Inject(forwardRef(() => FavoritesService))
-    private favoritesService: FavoritesService,
-    @Inject(forwardRef(() => AlbumService))
-    private albumService: AlbumService,
-    @Inject(forwardRef(() => TrackService))
-    private trackService: TrackService,
-  ) {
-    ArtistService.db = new InMemoryDatabase<ArtistEntity>();
+  async create(createArtistDto: ArtistDto) {
+    const artist = await this.prisma.artist.create({ data: createArtistDto });
+    return new ArtistEntity(artist);
   }
 
-  create(createArtistDto: ArtistDto) {
-    const data = {
-      id: uuidv4(),
-      ...createArtistDto,
-    };
-    return ArtistService.db.create(data);
+  async findAll() {
+    const artists = await this.prisma.artist.findMany();
+
+    return artists.map((album) => new ArtistEntity(album));
   }
 
-  findAll() {
-    return ArtistService.db.findAll();
+  async findOne(id: string) {
+    const artist = await this.prisma.artist.findUnique({
+      where: {
+        id: id,
+      },
+    });
+    if (!artist) {
+      return null;
+    }
+    return new ArtistEntity(artist);
   }
 
-  findOne(id: string) {
-    return ArtistService.db.findOne(id);
+  async update(id: string, updateArtistDto: ArtistDto) {
+    const artist = await this.prisma.artist.update({
+      where: {
+        id: id,
+      },
+      data: {
+        ...updateArtistDto,
+      },
+    });
+    return new ArtistEntity(artist);
   }
 
-  update(id: string, updateArtistDto: ArtistDto) {
-    const artist = {
-      ...updateArtistDto,
-      id,
-    };
-    return ArtistService.db.update(id, artist);
-  }
-
-  remove(id: string) {
-    const tracks = this.trackService.findAll();
-
-    tracks.forEach((track) => {
-      if (track.artistId === id) {
-        const updatedTrack = { ...track, artistId: null };
-        this.trackService.update(track.id, updatedTrack);
-      }
+  async remove(id: string): Promise<Response> {
+    await this.prisma.artist.delete({
+      where: {
+        id: id,
+      },
     });
 
-    const albums = this.albumService.findAll();
-
-    albums.forEach((album) => {
-      if (album.artistId === id) {
-        const updatedAlbum = { ...album, artistId: null };
-        this.albumService.update(album.id, updatedAlbum);
-      }
-    });
-
-    this.favoritesService.removeFromFavorites(id);
-    return ArtistService.db.delete(id);
+    return RESPONSES.REMOVED;
   }
 }

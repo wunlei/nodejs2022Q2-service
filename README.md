@@ -20,7 +20,7 @@ git clone https://github.com/wunlei/nodejs2022Q2-service.git
 
 ```
   cd nodejs2022Q2-service
-  git checkout docker
+  git checkout db-orm
 ```
 
 ### Installing NPM modules
