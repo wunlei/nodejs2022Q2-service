@@ -20,7 +20,7 @@ git clone https://github.com/wunlei/nodejs2022Q2-service.git
 
 ```
   cd nodejs2022Q2-service
-  git checkout db-orm
+  git checkout logger
 ```
 
 ### Installing NPM modules
@@ -40,7 +40,17 @@ docker-compose up
 ```
 
 After starting the app on port (4000 as default) you can open
-in your browser OpenAPI documentation by typing http://localhost:4000/api/
+in your browser OpenAPI documentation by typing http://localhost:4000/doc/
+
+### Log Levels
+
+LOG_FILE_SIZE in `.env` in kB
+
+- 0 - `error`
+- 1 - `warn`
+- 2 - `log`
+- 3 - `debug`
+- 4 - `verbose`
 
 ## Docker Scan
 
