@@ -9,11 +9,14 @@ import {
   Put,
   HttpCode,
   NotFoundException,
+  UseGuards,
 } from '@nestjs/common';
 import { TrackDto } from './dto/track.dto';
 import { TrackService } from './track.service';
 import { RESPONSES } from '../../constants/responses';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('track')
 export class TrackController {
   constructor(private readonly tracksService: TrackService) {}

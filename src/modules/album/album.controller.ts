@@ -9,11 +9,14 @@ import {
   NotFoundException,
   Put,
   HttpCode,
+  UseGuards,
 } from '@nestjs/common';
 import { AlbumService } from './album.service';
 import { AlbumDto } from './dto/album.dto';
 import { RESPONSES } from '../../constants/responses';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('album')
 export class AlbumController {
   constructor(private readonly albumsService: AlbumService) {}

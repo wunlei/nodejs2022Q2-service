@@ -10,12 +10,16 @@ import {
   ParseUUIDPipe,
   HttpCode,
   ForbiddenException,
+  UseGuards,
 } from '@nestjs/common';
+import { compare } from 'bcrypt';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { RESPONSES } from '../../constants/responses';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('user')
 export class UserController {
   constructor(private readonly usersService: UserService) {}
@@ -48,9 +52,13 @@ export class UserController {
   ) {
     const user = await this.findOne(id);
 
-    if (updateUserDto.oldPassword !== user.password) {
-      throw new ForbiddenException(RESPONSES.FORBIDDEN_PASSWORD);
-    }
+    await compare(updateUserDto.oldPassword, user.password).then(function (
+      result,
+    ) {
+      if (!result) {
+        throw new ForbiddenException(RESPONSES.FORBIDDEN_PASSWORD);
+      }
+    });
 
     return this.usersService.update(id, updateUserDto);
   }
